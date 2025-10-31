@@ -10,5 +10,16 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     minify: 'terser',
+    chunkSizeWarningLimit: 800,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          styled: ['styled-components'],
+          motion: ['framer-motion'],
+        }
+      }
+    }
   }
 })

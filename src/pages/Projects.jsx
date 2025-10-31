@@ -115,7 +115,7 @@ const Projects = () => {
             id: 1,
             title: "HealPal Chatmate",
             description: "Medical assistant chatbot using LLMs and Langchain framework for symptom analysis and treatment recommendations",
-            image: "/src/assets/healpal.png",
+            image: "/images/healpal.png",
             techStack: ["Python", "LLM", "Langchain", "NLP"],
             githubLink: "https://github.com/shishir-dwi/healpal-chatmate",
             liveLink: ""
@@ -124,7 +124,7 @@ const Projects = () => {
             id: 2,
             title: "IAB News Classification",
             description: "News classification system using LLaMA 2 and deep learning with improved zero-shot performance on IAB categories",
-            image: "/src/assets/iab.jpg",
+            image: "/images/iab.jpg",
             techStack: ["Python", "LLaMA 2", "Deep Learning", "NLP"],
             githubLink: "https://github.com/shishir-dwi/TIL-NLP-Project",
             liveLink: ""
@@ -133,7 +133,7 @@ const Projects = () => {
             id: 3,
             title: "Speech Emotion Recognition",
             description: "Deep learning model using TensorFlow's LSTM architecture to predict emotional states from voice recordings with MFCC features",
-            image: "/src/assets/ser.png",
+            image: "/images/ser.png",
             techStack: ["Python", "TensorFlow", "LSTM", "MFCC"],
             githubLink: "https://github.com/shishir-dwi/Speech-Emotion-Recognition",
             liveLink: ""
@@ -142,7 +142,7 @@ const Projects = () => {
             id: 4,
             title: "Dog Breed Classification",
             description: "Computer vision model to identify dog breeds using convolutional neural networks and transfer learning",
-            image: "/src/assets/dog.jpg",
+            image: "/images/dog.jpg",
             techStack: ["Python", "PyTorch", "CNN", "Transfer Learning"],
             githubLink: "https://github.com/shishir-dwi/Dog-Breed-Classification",
             liveLink: ""
@@ -167,7 +167,7 @@ const Projects = () => {
                             viewport={{ once: true }}
                         >
                             <ProjectImage>
-                                <img src={project.image || "/src/assets/project-placeholder.jpg"} alt={project.title} />
+                                <img src={project.image || "/images/project-placeholder-image.jpg"} alt={project.title} />
                             </ProjectImage>
                             <ProjectContent>
                                 <ProjectTitle>{project.title}</ProjectTitle>

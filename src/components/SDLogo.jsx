@@ -3,17 +3,22 @@ import React from 'react';
 
 const SDLogo = ({ color = "#6366f1", size = 32 }) => {
     return (
-        <svg width={size} height={size} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <linearGradient id="sdGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#6366f1" />
-                    <stop offset="100%" stopColor="#4f46e5" />
-                </linearGradient>
-            </defs>
-            <rect width="32" height="32" rx="8" fill="url(#sdGradient)" />
-            <text x="16" y="22" fontFamily="Arial, sans-serif" fontSize="16" fontWeight="bold" fill="#ffffff" textAnchor="middle">
-                SD
-            </text>
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <rect width="200" height="200" rx="40" fill="#4f46e5"/>
+            
+            <path d="M 95 60 Q 95 45 80 45 L 70 45 Q 55 45 55 60 Q 55 70 65 75 L 85 85 Q 95 90 95 100 Q 95 115 80 115 L 70 115 Q 55 115 55 100" 
+                    stroke="white" 
+                    stroke-width="12" 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round"
+                    fill="none"/>
+            
+            <path d="M 115 85 L 115 155 M 115 85 L 130 85 Q 150 85 150 120 Q 150 155 130 155 L 115 155" 
+                    stroke="white" 
+                    stroke-width="12" 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round"
+                    fill="none"/>
         </svg>
     );
 };

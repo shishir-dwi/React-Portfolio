@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { FaBars, FaTimes } from 'react-icons/fa'
+import { FaBars, FaTimes, FaMoon, FaSun } from 'react-icons/fa'
 import styled from 'styled-components'
 import SDLogo from './SDLogo'
 
 const Nav = styled.nav`
-  background-color: rgba(15, 23, 42, 0.95);
+  background-color: var(--surface);
   height: 80px;
   display: flex;
   justify-content: center;
@@ -15,28 +15,58 @@ const Nav = styled.nav`
   top: 0;
   z-index: 10;
   backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--surface-light);
 `
 
 const NavContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   height: 80px;
   z-index: 1;
   width: 100%;
   padding: 0 24px;
   max-width: 1200px;
+  column-gap: 24px; /* spacing between left, center, right groups */
 `
 
 const NavLogo = styled(Link)`
   color: var(--text);
   justify-self: flex-start;
   cursor: pointer;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   display: flex;
   align-items: center;
   font-weight: bold;
   text-decoration: none;
+  white-space: nowrap;
+`
+
+const LogoWrapper = styled.div`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+`
+
+const ThemeToggle = styled.button`
+  margin-left: 12px;
+  background: transparent;
+  border: 1px solid var(--surface-light);
+  color: var(--text);
+  border-radius: var(--radius-full);
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+
+  &:hover { background: var(--surface); transform: translateY(-1px); }
+  &:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 `
 
 const MobileIcon = styled.div`
@@ -59,7 +89,7 @@ const NavMenu = styled.ul`
   align-items: center;
   list-style: none;
   text-align: center;
-  margin-right: -22px;
+  gap: 24px; /* spacing between nav items */
 
   @media screen and (max-width: 768px) {
     display: flex;
@@ -76,6 +106,41 @@ const NavMenu = styled.ul`
   }
 `
 
+const LeftSlot = styled.div`
+  display: flex;
+  align-items: center;
+  justify-self: start;
+  gap: 8px;
+`
+
+const CenterSlot = styled.div`
+  display: inline-flex;
+  align-items: center;
+  justify-self: center;
+  position: relative;
+  padding: 0 16px;
+
+  &::before,
+  &::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 24px;
+    background: var(--surface-light);
+    opacity: .6;
+  }
+  &::before { margin-right: 16px; }
+  &::after { margin-left: 16px; }
+`
+
+const RightSlot = styled.div`
+  display: flex;
+  align-items: end;
+  justify-self: end;
+  justify-content: end;
+  gap: 8px;
+`
+
 const NavItem = styled.li`
   height: 80px;
   
@@ -90,7 +155,7 @@ const NavLink = styled(Link)`
   display: flex;
   align-items: center;
   text-decoration: none;
-  padding: 0 1rem;
+  padding: 0 .5rem;
   height: 100%;
   cursor: pointer;
   font-weight: 500;
@@ -99,7 +164,7 @@ const NavLink = styled(Link)`
   &::after {
     content: '';
     position: absolute;
-    bottom: 25px;
+    bottom: 22px;
     left: 50%;
     transform: translateX(-50%);
     width: ${({ active }) => (active ? '20px' : '0')};
@@ -127,6 +192,7 @@ const NavLink = styled(Link)`
 function Navbar() {
     const [isOpen, setIsOpen] = useState(false)
     const [scrollNav, setScrollNav] = useState(false)
+    const [theme, setTheme] = useState(() => document.documentElement.getAttribute('data-theme') || 'dark')
     const location = useLocation()
 
     const toggle = () => setIsOpen(!isOpen)
@@ -141,22 +207,63 @@ function Navbar() {
 
     useEffect(() => {
         window.addEventListener('scroll', changeNav)
+        // Sync theme state with <html data-theme>
+        const observer = new MutationObserver(() => {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark'
+            setTheme(current)
+        })
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
         return () => {
             window.removeEventListener('scroll', changeNav)
+            observer.disconnect()
         }
     }, [])
+
+    const toggleTheme = () => {
+        const next = theme === 'dark' ? 'light' : 'dark'
+        setTheme(next)
+        document.documentElement.setAttribute('data-theme', next)
+        localStorage.setItem('theme', next)
+    }
 
     return (
         <Nav scrollNav={scrollNav}>
             <NavContainer>
-                <NavLogo to="/">
-                    <SDLogo size={32} />
-                    <span>&nbsp;Shishir Dwivedi</span>
-                </NavLogo>
-                <MobileIcon onClick={toggle}>
+                <LeftSlot>
+                    <NavLogo to="/">
+                        <LogoWrapper>
+                            <SDLogo size={18} />
+                        </LogoWrapper>
+                        <span>Shishir Dwivedi</span>
+                    </NavLogo>
+                </LeftSlot>
+                <MobileIcon
+                    role="button"
+                    aria-label={isOpen ? 'Close menu' : 'Open menu'}
+                    aria-expanded={isOpen}
+                    aria-controls="primary-navigation"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            toggle()
+                        }
+                    }}
+                    onClick={toggle}
+                >
                     {isOpen ? <FaTimes /> : <FaBars />}
                 </MobileIcon>
-                <NavMenu isOpen={isOpen}>
+                <CenterSlot>
+                    <ThemeToggle
+                        aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+                        title={theme === 'dark' ? 'Light' : 'Dark'}
+                        onClick={toggleTheme}
+                    >
+                        {theme === 'dark' ? <FaSun /> : <FaMoon />}
+                    </ThemeToggle>
+                </CenterSlot>
+                <RightSlot>
+                    <NavMenu id="primary-navigation" isOpen={isOpen}>
                     <NavItem>
                         <NavLink
                             to="/"
@@ -211,7 +318,8 @@ function Navbar() {
                             Contact
                         </NavLink>
                     </NavItem>
-                </NavMenu>
+                    </NavMenu>
+                </RightSlot>
             </NavContainer>
         </Nav>
     )

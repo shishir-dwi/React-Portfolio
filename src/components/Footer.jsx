@@ -121,7 +121,7 @@ const Footer = () => {
                             <a href="https://github.com/shishir-dwi" target="_blank" rel="noopener noreferrer">
                                 <FaGithub />
                             </a>
-                            <a href="https://www.linkedin.com/in/shishir-spiral" target="_blank" rel="noopener noreferrer">
+                            <a href="https://www.linkedin.com/in/shishir-dwi" target="_blank" rel="noopener noreferrer">
                                 <FaLinkedin />
                             </a>
                             <a href="mailto:shishir.spiral@gmail.com">

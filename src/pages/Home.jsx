@@ -1,27 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, Suspense, lazy } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 // import AIBrainVisualizer from '../components/AIBrainVisualizer';
-import Matrix from '../components/Matrix';
+const Matrix = lazy(() => import('../components/Matrix'));
 
 const HeroSection = styled.section`
   min-height: calc(100vh - 80px);
   display: flex;
   align-items: center;
   padding: 2rem 0;
+  position: relative;
+  overflow: hidden;
 `;
 
 const HeroContainer = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 2.5rem;
   align-items: center;
+  position: relative;
+  z-index: 1;
 
   @media screen and (max-width: 768px) {
     grid-template-columns: 1fr;
   }
+`;
+
+const SectionBackground = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 0;
 `;
 
 const HeroContent = styled.div`
@@ -80,22 +90,31 @@ const SocialLinks = styled(motion.div)`
   }
 `;
 
-const HeroImage = styled.div`
-  width: 400px;
-  height: 400px;
-  margin: 0 auto;
-  position: relative;
-  
-  @media screen and (max-width: 768px) {
-    width: 300px;
-    height: 300px;
-    order: 1;
-  }
-  
-  @media screen and (max-width: 480px) {
-    width: 250px;
-    height: 250px;
-  }
+const RightPanel = styled(motion.div)`
+  display: grid;
+  gap: 1rem;
+`;
+
+const Card = styled(motion.div)`
+  background: var(--surface);
+  border: 1px solid var(--surface-light);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1rem;
+`;
+
+const BadgeGrid = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+`;
+
+const Badge = styled.span`
+  display: inline-block;
+  padding: .25rem .5rem;
+  border-radius: var(--radius-full);
+  background: var(--surface-light);
+  color: var(--text);
+  font-size: .85rem;
 `;
 
 const TypedText = ({ texts, speed = 100 }) => {
@@ -103,8 +122,15 @@ const TypedText = ({ texts, speed = 100 }) => {
     const [index, setIndex] = useState(0);
     const [isDeleting, setIsDeleting] = useState(false);
     const [textIndex, setTextIndex] = useState(0);
+    const prefersReducedMotion = useMemo(() =>
+        typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    , []);
 
     useEffect(() => {
+        if (prefersReducedMotion) {
+            setDisplayText(texts[0] || '');
+            return;
+        }
         let timeout;
 
         const currentText = texts[textIndex];
@@ -131,7 +157,7 @@ const TypedText = ({ texts, speed = 100 }) => {
         }
 
         return () => clearTimeout(timeout);
-    }, [index, isDeleting, textIndex, texts, speed]);
+    }, [index, isDeleting, textIndex, texts, speed, prefersReducedMotion]);
 
     return <span>{displayText}</span>;
 };
@@ -163,7 +189,7 @@ const Home = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 0.4 }}
                         >
-                            Machine Learning and AI practitioner with expertise in developing LLM-powered applications,
+                            Machine Learning / AI Engineer and Researcher with expertise in developing LLM-powered Agentic applications,
                             data-driven systems, and scalable ML pipelines.
                         </HeroSubtitle>
                         <ButtonGroup
@@ -189,17 +215,49 @@ const Home = () => {
                             <a href="https://github.com/shishir-dwi" target="_blank" rel="noopener noreferrer">
                                 <FaGithub />
                             </a>
-                            <a href="https://www.linkedin.com/in/shishir-spiral" target="_blank" rel="noopener noreferrer">
+                            <a href="https://www.linkedin.com/in/shishir-dwi" target="_blank" rel="noopener noreferrer">
                                 <FaLinkedin />
                             </a>
                         </SocialLinks>
                     </HeroContent>
-                    <HeroImage>
-                        {/* <AIBrainVisualizer /> */}
-                        <Matrix />
-                        {/* <img src="/src/assets/hero-image.png" alt="Hero" /> */}
-                    </HeroImage>
+                    <RightPanel>
+                        <Card
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.6, delay: 0.5 }}
+                        >
+                          <h3>Highlights</h3>
+                          <ul style={{ margin: '0.5rem 0 0 1rem' }}>
+                            <li>ML Applications, GenAI apps, Agents, RAG, FineTuning</li>
+                            <li>Production ML pipelines</li>
+                            <li>Observation, MLOps/LLMOps</li>
+                          </ul>
+                        </Card>
+                        <Card
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.6, delay: 0.6 }}
+                        >
+                          <h3>Core Stack</h3>
+                          <BadgeGrid>
+                            <Badge>Python</Badge>
+                            <Badge>FastAPI</Badge>
+                            <Badge>HuggingFace</Badge>
+                            <Badge>LangChain</Badge>
+                            <Badge>Node</Badge>
+                            <Badge>React</Badge>
+                            <Badge>OpenAI</Badge>
+                            <Badge>Postgres</Badge>
+                            <Badge>Mongo</Badge>
+                          </BadgeGrid>
+                        </Card>
+                    </RightPanel>
                 </HeroContainer>
+                <SectionBackground>
+                    <Suspense fallback={null}>
+                        <Matrix />
+                    </Suspense>
+                </SectionBackground>
             </div>
         </HeroSection>
     );
